@@ -7,7 +7,7 @@ import {
   useMemo,
 } from "react";
 import "./App.css";
-import { List, Typography } from "@material-tailwind/react";
+import { IconButton, List, Typography } from "@material-tailwind/react";
 import _ from "lodash";
 import {
   CustomDrawer,
@@ -35,6 +35,7 @@ import {
 } from "./hooks";
 import clsx from "clsx";
 import { BsGithub } from "react-icons/bs";
+import { FiSearch } from "react-icons/fi";
 
 type IntersectionObserverRef = MutableRefObject<
   IntersectionObserver | null | undefined
@@ -232,20 +233,33 @@ function App() {
             <div className="flex flex-wrap gap-5 mt-10 w-full">
               <div className="md:w-1/3 flex flex-col bg-blue-gray-50/30 rounded-xl mt-10">
                 <div
-                  className="fixed bg-white md:bg-transparent top-10 left-0 p-5 w-full flex flex-col gap-3 md:sticky md:top-20"
+                  className="fixed bg-white md:bg-transparent top-10 left-0 p-5 w-full flex flex-col gap-3 md:sticky md:top-20 z-50"
                   onClick={toggle}
                 >
-                  <div>
-                    {renderForm}
-                    <div className="hidden md:flex">{renderSearchText}</div>
+                  <div className="">
+                    <div className="hidden md:flex md:flex-col">
+                      {renderForm}
+                    </div>
+                    <div className="hidden md:flex md:flex-col">
+                      {renderSearchText}
+                    </div>
                   </div>
                   <div className="hidden md:flex md:flex-col">
                     {renderUserList}
                   </div>
-                  <div className="flex md:hidden">
+                  <div className="flex justify-between items-center w-full md:hidden">
                     {!_.isNil(selected) && (
                       <SelectedGithubUser user={selected} />
                     )}
+
+                    <div className="hover:cursor-pointer">
+                      <IconButton
+                        variant="text"
+                        className="flex items-center justify-center text-lg"
+                      >
+                        <FiSearch />
+                      </IconButton>
+                    </div>
                   </div>
                 </div>
               </div>
