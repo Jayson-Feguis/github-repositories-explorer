@@ -7,7 +7,11 @@ const ResultNotFound = ({ text }: { text: string }) => {
       <div className="text-7xl">
         <MdOutlineSearchOff />
       </div>
-      <Typography variant="lead" className="text-blue-gray-400 text-center">
+      <Typography
+        data-testid={text}
+        variant="lead"
+        className="text-blue-gray-400 text-center"
+      >
         {text}
       </Typography>
     </div>

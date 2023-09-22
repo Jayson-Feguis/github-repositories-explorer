@@ -1,5 +1,4 @@
 import {
-  ChangeEvent,
   useState,
   FormEvent,
   useRef,
@@ -37,10 +36,6 @@ import {
 import clsx from "clsx";
 import { BsGithub } from "react-icons/bs";
 
-type FormData = {
-  search: string;
-};
-
 type IntersectionObserverRef = MutableRefObject<
   IntersectionObserver | null | undefined
 >;
@@ -61,7 +56,6 @@ function App() {
   );
   const { open, toggle, onClose } = useToggle(); // This will toggle and/or close the drawer
   const isMobile = useIsMobileView(); // Check if window is in mobile view
-  const [formData, setFormData] = useState<FormData>({ search: "" }); // This holds state for search username
   // This holds state for searched github usernames
   const [filteredGithubUsers, setFilteredGithubUsers] = useState<TUser[]>(
     githubUsers.info
@@ -136,21 +130,18 @@ function App() {
     if (open) mobileInputRef?.current?.focus();
   }, [open]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleSubmit = async (
+    e: FormEvent<HTMLFormElement>,
+    search: string
+  ) => {
     e.preventDefault();
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    if (isMobile && isDefaultView) toggle();
     try {
       // Check if search is empty
-      if (_.values(formData).some((v) => _.isEmpty(v)))
-        throw Error(ERROR.CHECK_INPUT);
+      if (_.isEmpty(search)) throw Error(ERROR.CHECK_INPUT);
 
       const query = `/search/users?${queryStringify({
-        q: formData.search,
+        q: search,
         page: 1,
       })}`;
       const cachedUser = githubUsersCached.find((i: TCached<TUser>) =>
@@ -168,7 +159,7 @@ function App() {
         await searchGithubUser(query);
       }
 
-      setLastSearch(formData.search);
+      setLastSearch(search);
     } catch (error) {
       console.error(error);
     }
@@ -199,7 +190,7 @@ function App() {
             />
           ))
         ) : (
-          !_.isEmpty(formData.search) &&
+          !_.isEmpty(lastSearch) &&
           githubUsers.isSuccess &&
           !githubUsers.isLoading && <ResultNotFound text="User not found!" />
         )
@@ -218,12 +209,10 @@ function App() {
 
   const renderForm = (
     <SearchUserForm
-      key="search-web-view"
+      ref={isMobile ? mobileInputRef : undefined}
+      key="search"
       onSubmit={handleSubmit}
-      value={formData.search}
       isLoading={githubUsers.isLoading}
-      onChange={handleChange}
-      onClear={() => setFormData((prev) => ({ ...prev, search: "" }))}
     />
   );
 
@@ -254,14 +243,16 @@ function App() {
                     {renderUserList}
                   </div>
                   <div className="flex md:hidden">
-                    <SelectedGithubUser user={selected} />
+                    {!_.isNil(selected) && (
+                      <SelectedGithubUser user={selected} />
+                    )}
                   </div>
                 </div>
               </div>
               {/* ------------------------------ REPOSITORIES ------------------------------ */}
               <div className="flex-1 flex flex-col items-start pt-[6.5rem] md:pt-0 bg-blue-gray-50/30 rounded-xl mt-10">
                 <div className="hidden md:flex md:flex-col sticky top-[4.5rem] w-full py-3 mt-3 px-5 bg-[#F9FAFB]">
-                  <SelectedGithubUser user={selected} />
+                  {!_.isNil(selected) && <SelectedGithubUser user={selected} />}
                 </div>
                 <List className="!min-w-[100px] w-full">
                   {_.size(usersRepo) > 0
@@ -314,18 +305,7 @@ function App() {
         )}
         overlayClassName="flex flex-col md:hidden"
       >
-        <SearchUserForm
-          ref={mobileInputRef}
-          key="search-mobile-view"
-          onSubmit={handleSubmit}
-          value={formData.search}
-          isLoading={githubUsers.isLoading}
-          onChange={handleChange}
-          onClear={() => {
-            setFormData((prev) => ({ ...prev, search: "" }));
-            mobileInputRef?.current?.focus();
-          }}
-        />
+        {renderForm}
         {renderSearchText}
         <div className="flex flex-col md:hidden">{open && renderUserList}</div>
       </CustomDrawer>

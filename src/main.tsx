@@ -1,13 +1,17 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { ThemeProvider } from "@material-tailwind/react";
+import { Footer } from "./components/index.ts";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+const container: any = document.getElementById("root");
+const root = createRoot(container);
+root.render(
   <React.StrictMode>
     <ThemeProvider>
       <App />
+      <Footer />
     </ThemeProvider>
   </React.StrictMode>
 );
