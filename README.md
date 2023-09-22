@@ -21,10 +21,10 @@ Explore these powerful features to make the most out of GitHub Repositories Expl
 
    1. Clone the project repository
 
-   ```bash
-   git clone https://github.com/Jayson-Feguis/github-repositories-explorer.git
-
-   ```
+      ```bash
+      git clone https://github.com/Jayson-Feguis/github-repositories-explorer.git
+   
+      ```
 
    2. Install project dependencies using either Yarn or npm:
       
