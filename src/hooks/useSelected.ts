@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 const useSelected = <T>(defaultValue: T) => {
   const [selected, setSelected] = useState<T>(defaultValue);
 
-  const onSelect = (str: T) => setSelected(str);
+  const onSelect = useCallback((str: T) => setSelected(str), []);
 
   return { selected, onSelect };
 };

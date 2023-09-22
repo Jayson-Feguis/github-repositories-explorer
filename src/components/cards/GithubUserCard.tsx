@@ -4,7 +4,7 @@ import {
   ListItem,
   ListItemPrefix,
 } from "@material-tailwind/react";
-import { TUser } from "../types/global";
+import { TUser } from "../../types/global";
 import _ from "lodash";
 
 type Props = {
@@ -16,13 +16,19 @@ type Props = {
 const GithubUserCard = ({ user, onClick, active }: Props) => {
   return (
     <ListItem
+      data-testid={user.id}
       onClick={() => onClick(user as TUser)}
       className={_.isEqual(active, user.login) ? "bg-blue-gray-400/10" : ""}
     >
       <ListItemPrefix>
-        <Avatar src={user.avatar_url} alt={user?.login} size="xs" />
+        <Avatar
+          data-testid={user.avatar_url}
+          src={user.avatar_url}
+          alt={user?.login}
+          size="xs"
+        />
       </ListItemPrefix>
-      <Typography>{user?.login}</Typography>
+      <Typography data-testid={user.login}>{user?.login}</Typography>
     </ListItem>
   );
 };
