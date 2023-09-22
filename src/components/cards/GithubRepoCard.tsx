@@ -15,30 +15,37 @@ type Props = {
 
 const GithubRepoCard = forwardRef(
   ({ repo }: Props, ref: Ref<HTMLDivElement>) => {
-    const { name = "", description = "", stargazers_count = 0 } = repo;
+    const { id, name = "", description = "", stargazers_count = 0 } = repo;
 
     return (
-      <ListItem ref={ref}>
+      <ListItem ref={ref} data-testid={id}>
         <ListItemPrefix className="flex items-start flex-col line-clamp-1">
-          <Typography variant="h6" className="!line-clamp-1">
+          <Typography data-testid={name} variant="h6" className="!line-clamp-1">
             {name}
           </Typography>
-          <Typography variant="paragraph" className="!line-clamp-1">
+          <Typography
+            data-testid={description}
+            variant="paragraph"
+            className="!line-clamp-1"
+          >
             {description || "No description"}
           </Typography>
         </ListItemPrefix>
         <ListItemSuffix>
-          <Typography
-            variant="small"
-            className="flex items-center gap-1 font-bold"
-          >
-            {Number(stargazers_count) > 999
-              ? numeral(stargazers_count).format("0.0a")
-              : stargazers_count}{" "}
+          <div className="flex items-center gap-1 ">
+            <Typography
+              variant="small"
+              className="font-bold"
+              data-testid={stargazers_count}
+            >
+              {Number(stargazers_count) > 999
+                ? numeral(stargazers_count).format("0.0a")
+                : stargazers_count}
+            </Typography>
             <div className="text-xl text-yellow-800">
               <TbStarFilled />
             </div>
-          </Typography>
+          </div>
         </ListItemSuffix>
       </ListItem>
     );
